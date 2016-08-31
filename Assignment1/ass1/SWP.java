@@ -111,10 +111,6 @@ public class SWP {
         }
         stop_ack_timer();
     }
-    @Override
-    public void run (){
-        Thread
-    }
    public void protocol6() {
        init();
        for(i = 0; i< NR_BUFS; i++){arrived[i]=false};
@@ -146,26 +142,37 @@ public class SWP {
     of the frame associated with this timer, 
    */
     Timer timers = new Timer[NR_BUFS];
+    Timer acktimer;
    private void start_timer(int seq) {
-       timers[seq] = new Timer(1000，new Actionlistener(){
-          generate_timeout_event(seq):
-       });
+       ActionListener taskPerformer = new ActionListener() {
+           public void actionPerformed(ActionEvent evt) {
+               //...Perform a task...
+               swe.generate_timeout_event(seq);
+           }
+       };
+       timers[seq] = new Timer(1000，taskPerformer);
+       timers[seq].setRepeats(false);
+       timers[seq].start();
    }
 
    private void stop_timer(int seq) {
-       timers[seq].cancel()
+       timers[seq].stop();
    }
 
    private void start_ack_timer( ) {
-       timers[seq] = new Timer(1000，new Actionlistener(){
-           generate_acktimeout_event(seq):
-       });
+       ActionListener taskPerformer = new ActionListener() {
+           public void actionPerformed(ActionEvent evt) {
+               //...Perform a task...
+               swe.generate_timeout_event(seq);
+           }
+       };
+       acktimer = new Timer(1000, taskPerformer);
+       acktimer.setRepeats(false);
+       acktimer.start();
    }
 
    private void stop_ack_timer() {
-       timers[seq] = new Timer(1000，new Actionlistener(){
-           generate_timeout_event(seq):
-       });
+       acktimer.stop();
    }
 
 }//End of class
