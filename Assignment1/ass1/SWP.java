@@ -81,12 +81,46 @@ public class SWP {
  	implement your Protocol Variables and Methods below: 
  *==========================================================================*/
 
+   int nBuffered;
+   int ack_expected;
+   int frame_expected;
+   int next_frame_to_send;
+   int too_far;
+   int i;
+   Pframe r;
+   Packet in_buf[] = new Packet[NR_BUFS];
+   boolean no_nak = true;
+    
+   boolean arrived[];
+    private void sendFrame(PFrame fm, int frame_expected_num, Packet buffer[]){
+        PFrame frame = new PFrame();
+        frame.kind = fm.kind;
+        if(frame.kind == fm.DATA){frame.info = buffer[]}
+        frame.seq = fm.seq;
+        frame.ack = (frame_expected_num + MAX_SEQ)%(MAX_SEQ + 1);
+        if(frame.kind == fm.NAK){no_nak = false}
+        to_physical_layer(frame);
+        if(frame.kind == fm.DATA){
+            start_timer(frame.seq % NR_BUFS);
+        }
+        stop_ack_timer();
+    }
    public void protocol6() {
-        init();
+       init();
+       enable_network_layer(NR_BUFS);
+       ack_expected = 0;
+       next_frame_to_send = 0;
+       frame_expected = 0;
+       too_far = NR_BUFS;
+       nBuffered=0;
+       for(i = 0; i< NR_BUFS; i++){arrived[i]=false};
 	while(true) {	
          wait_for_event(event);
 	   switch(event.type) {
 	      case (PEvent.NETWORK_LAYER_READY):
+               nBuffered += 1;
+               from_network_layer(out_buf[next_frame_to_send % NR_BUFS]);
+               
                    break; 
 	      case (PEvent.FRAME_ARRIVAL ):
 		   break;	   
