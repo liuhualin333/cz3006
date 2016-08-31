@@ -10,7 +10,7 @@
  *          Nanyang Technological University                     *
  *          Singapore 639798                                     *
  *===============================================================*/
-
+import javax.swing.Timer
 public class SWP {
 
 /*========================================================================*
@@ -40,6 +40,12 @@ public class SWP {
       for (int i = 0; i < NR_BUFS; i++){
 	   out_buf[i] = new Packet();
       }
+       enable_network_layer(NR_BUFS);
+       ack_expected = 0;
+       next_frame_to_send = 0;
+       frame_expected = 0;
+       too_far = NR_BUFS;
+       nBuffered=0;
    }
 
    private void wait_for_event(PEvent e){
@@ -92,34 +98,30 @@ public class SWP {
    boolean no_nak = true;
     
    boolean arrived[];
-    private void sendFrame(PFrame fm, int frame_expected_num, Packet buffer[]){
+    private void sendFrame(int fk, int frame_nr, int frame_expected, Packet buffer[]){
         PFrame frame = new PFrame();
-        frame.kind = fm.kind;
-        if(frame.kind == fm.DATA){frame.info = buffer[]}
-        frame.seq = fm.seq;
-        frame.ack = (frame_expected_num + MAX_SEQ)%(MAX_SEQ + 1);
-        if(frame.kind == fm.NAK){no_nak = false}
+        frame.kind = fk;
+        if(frame.kind == frame.DATA){frame.info = buffer[frame_nr % NR_BUFS]}
+        frame.seq = frame_nr;
+        frame.ack = (frame_expected + MAX_SEQ)%(MAX_SEQ + 1);
+        if(frame.kind == frame.NAK){no_nak = false}
         to_physical_layer(frame);
-        if(frame.kind == fm.DATA){
-            start_timer(frame.seq % NR_BUFS);
+        if(frame.kind == frame.DATA){
+            start_timer(frame_nr % NR_BUFS);
         }
         stop_ack_timer();
     }
+    @Override
+    public void run (){
+        Thread
+    }
    public void protocol6() {
        init();
-       enable_network_layer(NR_BUFS);
-       ack_expected = 0;
-       next_frame_to_send = 0;
-       frame_expected = 0;
-       too_far = NR_BUFS;
-       nBuffered=0;
        for(i = 0; i< NR_BUFS; i++){arrived[i]=false};
 	while(true) {	
          wait_for_event(event);
 	   switch(event.type) {
 	      case (PEvent.NETWORK_LAYER_READY):
-               nBuffered += 1;
-               from_network_layer(out_buf[next_frame_to_send % NR_BUFS]);
                
                    break; 
 	      case (PEvent.FRAME_ARRIVAL ):
@@ -143,21 +145,27 @@ public class SWP {
     than the index of the timer array, 
     of the frame associated with this timer, 
    */
- 
+    Timer timers = new Timer[NR_BUFS];
    private void start_timer(int seq) {
-     
+       timers[seq] = new Timer(1000，new Actionlistener(){
+          generate_timeout_event(seq):
+       });
    }
 
    private void stop_timer(int seq) {
-
+       timers[seq].cancel()
    }
 
    private void start_ack_timer( ) {
-      
+       timers[seq] = new Timer(1000，new Actionlistener(){
+           generate_acktimeout_event(seq):
+       });
    }
 
    private void stop_ack_timer() {
-     
+       timers[seq] = new Timer(1000，new Actionlistener(){
+           generate_timeout_event(seq):
+       });
    }
 
 }//End of class
