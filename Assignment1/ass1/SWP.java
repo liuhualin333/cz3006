@@ -10,8 +10,10 @@
  *          Nanyang Technological University                     *
  *          Singapore 639798                                     *
  *===============================================================*/
-import javax.swing.Timer
-public class SWP {
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.Timer;
+public class SWP implements ActionListener{
 
 /*========================================================================*
  the following are provided, do not change them!!
@@ -93,7 +95,7 @@ public class SWP {
    int next_frame_to_send;
    int too_far;
    int i;
-   Pframe r;
+   PFrame r;
    Packet in_buf[] = new Packet[NR_BUFS];
    boolean no_nak = true;
     
@@ -101,10 +103,10 @@ public class SWP {
     private void sendFrame(int fk, int frame_nr, int frame_expected, Packet buffer[]){
         PFrame frame = new PFrame();
         frame.kind = fk;
-        if(frame.kind == frame.DATA){frame.info = buffer[frame_nr % NR_BUFS]}
+        if(frame.kind == frame.DATA){frame.info = buffer[frame_nr % NR_BUFS];}
         frame.seq = frame_nr;
         frame.ack = (frame_expected + MAX_SEQ)%(MAX_SEQ + 1);
-        if(frame.kind == frame.NAK){no_nak = false}
+        if(frame.kind == frame.NAK){no_nak = false;}
         to_physical_layer(frame);
         if(frame.kind == frame.DATA){
             start_timer(frame_nr % NR_BUFS);
@@ -113,7 +115,7 @@ public class SWP {
     }
    public void protocol6() {
        init();
-       for(i = 0; i< NR_BUFS; i++){arrived[i]=false};
+       for(i = 0; i< NR_BUFS; i++){arrived[i]=false;};
 	while(true) {	
          wait_for_event(event);
 	   switch(event.type) {
@@ -141,17 +143,19 @@ public class SWP {
     than the index of the timer array, 
     of the frame associated with this timer, 
    */
-    Timer timers = new Timer[NR_BUFS];
+    Timer timers[] = new Timer[NR_BUFS];
     Timer acktimer;
    private void start_timer(int seq) {
+       final int seqnum = seq;
        ActionListener taskPerformer = new ActionListener() {
+	      @Override
            public void actionPerformed(ActionEvent evt) {
                //...Perform a task...
-               swe.generate_timeout_event(seq);
+               swe.generate_timeout_event(seqnum);
            }
        };
-       timers[seq] = new Timer(1000，taskPerformer);
        timers[seq].setRepeats(false);
+       timers[seq] = new Timer(1000, taskPerformer);
        timers[seq].start();
    }
 
@@ -161,9 +165,10 @@ public class SWP {
 
    private void start_ack_timer( ) {
        ActionListener taskPerformer = new ActionListener() {
+	   @Override
            public void actionPerformed(ActionEvent evt) {
                //...Perform a task...
-               swe.generate_timeout_event(seq);
+               swe.generate_acktimeout_event();
            }
        };
        acktimer = new Timer(1000, taskPerformer);
@@ -173,6 +178,9 @@ public class SWP {
 
    private void stop_ack_timer() {
        acktimer.stop();
+   }
+   public void actionPerformed (ActionEvent evt){
+       System.out.println("Action Performed");
    }
 
 }//End of class
