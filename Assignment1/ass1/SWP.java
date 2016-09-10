@@ -39,15 +39,16 @@ public class SWP implements ActionListener{
 
    //the following methods are all protocol related
    private void init(){
-      for (int i = 0; i < NR_BUFS; i++){
-	   out_buf[i] = new Packet();
-      }
+    for (int i = 0; i < NR_BUFS; i++){
+      out_buf[i] = new Packet();
+      arrived[i] = false;
+    }
        enable_network_layer(NR_BUFS);
        ack_expected = 0;
        next_frame_to_send = 0;
        frame_expected = 0;
        too_far = NR_BUFS;
-       nBuffered=0;
+       nbuffered=0;
    }
 
    private void wait_for_event(PEvent e){
@@ -77,7 +78,7 @@ public class SWP implements ActionListener{
    }
 
    private void from_physical_layer(PFrame fm) {
-      PFrame fm1 = swe.from_physical_layer(); 
+      PFrame fm1 = swe.from_physical_layer(fm); 
 	fm.kind = fm1.kind;
 	fm.seq = fm1.seq; 
 	fm.ack = fm1.ack;
@@ -88,55 +89,108 @@ public class SWP implements ActionListener{
 /*===========================================================================*
  	implement your Protocol Variables and Methods below: 
  *==========================================================================*/
-
-   int nBuffered;
-   int ack_expected;
-   int frame_expected;
-   int next_frame_to_send;
-   int too_far;
-   int i;
-   PFrame r;
-   Packet in_buf[] = new Packet[NR_BUFS];
-   boolean no_nak = true;
+  private Packet in_buf[] = new Packet[NR_BUFS];
+   
+  private int ack_expected;              //lower edge of sender's window
+  private int next_frame_to_send;          //upper edge of sender's window
+  private int frame_expected;            //lower edge of receiver's window
+  private int too_far;               //upper edge of receiver's window
+  private int nbuffered;
+  private int i;                 //index into buffer pool
+  private PFrame r;                //scratch variable
+   
+  private boolean arrived[] = new boolean[NR_BUFS];
+  private boolean no_nak = true;  
+   
+  public static final int DATA = 0;
+  public static final int ACK  = 1;
+  public static final int NAK  = 2;
+  public static final String[] KIND = {"DATA", 
+                "ACK", 
+                "NAK" };
+   
     
-   boolean arrived[] = new boolean[8];
-    private void sendFrame(int fk, int frame_nr, int frame_expected, Packet buffer[]){
-        PFrame frame = new PFrame();
-        frame.kind = fk;
-        if(frame.kind == frame.DATA){frame.info = buffer[frame_nr % NR_BUFS];}
-        frame.seq = frame_nr;
-        frame.ack = (frame_expected + MAX_SEQ)%(MAX_SEQ + 1);
-        if(frame.kind == frame.NAK){no_nak = false;}
-        to_physical_layer(frame);
-        if(frame.kind == frame.DATA){
-            start_timer(frame_nr % NR_BUFS);
+  private void sendFrame(int fk, int frame_nr, int frame_expected, Packet buffer[]){
+    PFrame frame = new PFrame();
+    frame.kind = fk;
+    if(frame.kind == frame.DATA)
+      frame.info = buffer[frame_nr % NR_BUFS];
+    frame.seq = frame_nr;
+    frame.ack = (frame_expected + MAX_SEQ) % (MAX_SEQ + 1);
+    if(frame.kind == frame.NAK)
+      no_nak = false;
+    to_physical_layer(frame);
+    if(frame.kind == frame.DATA)
+      start_timer(frame_nr % NR_BUFS);
+    stop_ack_timer();
+  }
+  
+  public void protocol6() {
+    init();
+    while(true) {
+      wait_for_event(event);
+	    switch(event.type) {
+        case (PEvent.NETWORK_LAYER_READY):          
+          nbuffered += 1;
+            from_network_layer(out_buf[next_frame_to_send % NR_BUFS]);
+            sendFrame(DATA, next_frame_to_send, frame_expected, out_buf);
+            inc(next_frame_to_send);
+            break;           
+        case (PEvent.FRAME_ARRIVAL ):
+          from_physical_layer(r);
+            if (r.kind==DATA){
+              if ((r.seq!=frame_expected)&&no_nak)
+                sendFrame(NAK, 0, frame_expected, out_buf);
+              else
+                start_ack_timer();
+              
+              if (between(frame_expected, r.seq, too_far)&&(arrived[r.seq % NR_BUFS]==false)){
+                arrived[r.seq % NR_BUFS] = true;
+                in_buf[r.seq % NR_BUFS] = r.info;
+                while (arrived[frame_expected % NR_BUFS]) {
+                  to_network_layer(in_buf[frame_expected % NR_BUFS]);
+                  no_nak = true;
+                  arrived[frame_expected % NR_BUFS] = false;
+                  inc(frame_expected);
+                  inc(too_far);
+                  start_ack_timer();
+                  }               
+              }             
+            }
+            if ((r.kind==NAK)&&between(ack_expected, (r.ack+1)%(MAX_SEQ+1), next_frame_to_send))
+              sendFrame(DATA, (r.ack+1)%(MAX_SEQ+1), frame_expected, out_buf);
+            
+            while (between(ack_expected, r.ack, next_frame_to_send)) {
+              nbuffered -= 1;
+              stop_timer(ack_expected % NR_BUFS);
+              inc(ack_expected);
+              }
+          break;     
+          case (PEvent.CKSUM_ERR):
+            if (no_nak) {
+        sendFrame(NAK, 0, frame_expected, out_buf);
         }
-        stop_ack_timer();
-    }
-   public void protocol6() {
-       init();
-       for(i = 0; i< NR_BUFS; i++){arrived[i]=false;};
-	while(true) {	
-         wait_for_event(event);
-	   switch(event.type) {
-	      case (PEvent.NETWORK_LAYER_READY):
-               
-                   break; 
-	      case (PEvent.FRAME_ARRIVAL ):
-		   break;	   
-              case (PEvent.CKSUM_ERR):
-      	           break;  
-              case (PEvent.TIMEOUT): 
-	           break; 
-	      case (PEvent.ACK_TIMEOUT): 
-                   break; 
-            default: 
-		   System.out.println("SWP: undefined event type = " 
-                                       + event.type); 
-		   System.out.flush();
-	   }
-      }      
-   }
+              break;  
+          case (PEvent.TIMEOUT):
+            sendFrame(DATA, oldest_frame, frame_expected, out_buf);
+            break; 
+        case (PEvent.ACK_TIMEOUT): 
+          sendFrame(ACK, 0, frame_expected, out_buf);
+          break; 
+          default:
+            System.out.println("SWP: undefined event type = " + event.type);
+            System.out.flush();
+     }
+    }      
+  }
+
+  private boolean between(int a, int b, int c) {
+    return ((a<=b)&&(b<c))||((c<a)&&(a<=b))||((b<c)&&(c<a));
+  }
+
+  private void inc(int number_frame) {
+    number_frame = (number_frame + 1) % 8; 
+  }
 
  /* Note: when start_timer() and stop_timer() are called, 
     the "seq" parameter must be the sequence number, rather 
@@ -144,7 +198,7 @@ public class SWP implements ActionListener{
     of the frame associated with this timer, 
    */
     Timer timers[] = new Timer[NR_BUFS];
-    Timer acktimer;
+    Timer acktimer = null;
    private void start_timer(int seq) {
        final int seqnum = seq;
        ActionListener taskPerformer = new ActionListener() {
@@ -154,8 +208,8 @@ public class SWP implements ActionListener{
                swe.generate_timeout_event(seqnum);
            }
        };
-       timers[seq].setRepeats(false);
        timers[seq] = new Timer(1000, taskPerformer);
+       timers[seq].setRepeats(false);
        timers[seq].start();
    }
 
@@ -177,6 +231,9 @@ public class SWP implements ActionListener{
    }
 
    private void stop_ack_timer() {
+       if(acktimer== null){
+        return;
+       }
        acktimer.stop();
    }
    public void actionPerformed (ActionEvent evt){
@@ -194,5 +251,3 @@ public class SWP implements ActionListener{
      swe.generate_acktimeout_event(), or
      swe.generate_timeout_event(seqnr).
 */
-
-
