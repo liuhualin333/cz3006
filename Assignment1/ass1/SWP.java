@@ -99,7 +99,7 @@ public class SWP implements ActionListener{
    Packet in_buf[] = new Packet[NR_BUFS];
    boolean no_nak = true;
     
-   boolean arrived[];
+   boolean arrived[] = new boolean[8];
     private void sendFrame(int fk, int frame_nr, int frame_expected, Packet buffer[]){
         PFrame frame = new PFrame();
         frame.kind = fk;
