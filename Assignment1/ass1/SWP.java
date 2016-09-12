@@ -10,10 +10,12 @@
  *          Nanyang Technological University                     *
  *          Singapore 639798                                     *
  *===============================================================*/
-//import javax.swing.Timer;
-import java.util.Timer;
-import java.util.TimerTask;
-public class SWP{
+import javax.swing.Timer;
+import java.awt.*;
+import java.awt.event.*;
+//import java.util.Timer;
+//import java.util.TimerTask;
+public class SWP implements ActionListener{
 
 /*========================================================================*
  the following are provided, do not change them!!
@@ -215,7 +217,7 @@ public class SWP{
         of the frame associated with this timer, 
     ===========================================================*/
 
-    private Timer[] timer = new Timer[NR_BUFS];
+    /*private Timer[] timer = new Timer[NR_BUFS];
     private Timer ack_timer = new Timer();
 
     private void start_timer(int seq){
@@ -261,32 +263,41 @@ public class SWP{
             swe.generate_timeout_event(this.seq);
         }
     }
-    /*
+    */
     Timer timers[] = new Timer[NR_BUFS];
-    Timer acktimer = new Timer(2000, this);
+    Timer acktimer = new Timer(500, this);
     
     private void start_timer(int seq) {
         final int seqnum = seq;
+        stop_timer(seq);
         ActionListener taskPerformer = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 //...Perform a task...
-                oldest_frame = seqnum;
                 swe.generate_timeout_event(seqnum);
             }
         };
-        timers[seq] = new Timer(2000, taskPerformer);
-        timers[seq].setRepeats(false);
-        timers[seq].start();
+        timers[seq%NR_BUFS] = new Timer(2000, taskPerformer);
+        timers[seq%NR_BUFS].setRepeats(false);
+        timers[seq%NR_BUFS].start();
     }
 
     private void stop_timer(int seq) {
         try {
-            timers[seq].stop(); 
+            timers[seq%NR_BUFS].stop(); 
         } catch (Exception e){}
     }
     
     private void start_ack_timer( ) {
+        stop_ack_timer();
+        ActionListener taskPerformer = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                //...Perform a task...
+                swe.generate_acktimeout_event();
+            }
+        };
+        acktimer = new Timer(500, taskPerformer);
         acktimer.setRepeats(false);
         acktimer.start();
     }
@@ -300,7 +311,7 @@ public class SWP{
         swe.generate_acktimeout_event();
         System.out.println("Action Performed");
     }
-    */
+    
 }   //End of class
 
 /* Note: In class SWE, the following two public methods are available:
