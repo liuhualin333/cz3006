@@ -1,0 +1,352 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"p",
+				"printf	printf …"
+			],
+			[
+				"n",
+				"needleft"
+			],
+			[
+				"dr",
+				"draw_front"
+			],
+			[
+				"l",
+				"location_x"
+			],
+			[
+				"lf",
+				"left_dis"
+			],
+			[
+				"b",
+				"break"
+			],
+			[
+				"r",
+				"right_dis"
+			],
+			[
+				"ge",
+				"get_left"
+			],
+			[
+				"f",
+				"frontright_dis"
+			],
+			[
+				"c",
+				"cur_direction"
+			],
+			[
+				"tr",
+				"true"
+			],
+			[
+				"ch",
+				"check_front"
+			],
+			[
+				"d",
+				"direction"
+			],
+			[
+				"lo",
+				"locx"
+			],
+			[
+				"m",
+				"map"
+			],
+			[
+				"pr",
+				"print_map"
+			],
+			[
+				"h",
+				"heading_goal"
+			],
+			[
+				"g",
+				"get_right"
+			],
+			[
+				"chek",
+				"check_left"
+			],
+			[
+				"moe",
+				"move_forward"
+			],
+			[
+				"check",
+				"check_front"
+			],
+			[
+				"mo",
+				"move_forward"
+			],
+			[
+				"s",
+				"switch"
+			],
+			[
+				"dir",
+				"dir"
+			],
+			[
+				"no",
+				"not_goal"
+			],
+			[
+				"F",
+				"false"
+			],
+			[
+				"i",
+				"i"
+			],
+			[
+				"mov",
+				"move_on"
+			],
+			[
+				"draw",
+				"draw_left"
+			],
+			[
+				"le",
+				"left_dis"
+			],
+			[
+				"de",
+				"define"
+			],
+			[
+				"t",
+				"typedef"
+			],
+			[
+				"ma",
+				"map"
+			],
+			[
+				"gri",
+				"grid_map"
+			],
+			[
+				"in",
+				"initial"
+			],
+			[
+				"ar",
+				"arrived"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 432.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/C/Users/Clevo/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/C/Users/Clevo/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/C/Users/Clevo/Desktop/helloworld.java",
+		"/C/Users/Clevo/Desktop/hw.java",
+		"/E/Git/cz3006/Assignment1/ass1/SWP.class",
+		"/E/Git/cz3006/Assignment1/ass1/SWP$2.class",
+		"/E/Git/cz3006/Assignment1/ass1/SWP$1.class",
+		"/E/Git/cz3006/Assignment1/ass1/PFrameMsg.class",
+		"/E/Git/cz3006/Assignment1/ass1/SWP.java",
+		"/E/Git/cz3006/Assignment1/ass1/send_file_2.txt",
+		"/E/Git/cz3006/Assignment1/ass1/send_file_1.txt",
+		"/E/Git/cz3006/Assignment1/ass1/receive_file_2.txt",
+		"/E/Git/cz3006/Assignment1/ass1/receive_file_1.txt",
+		"/E/Git/cz3006/Assignment1/ass1/PacketQueue.class",
+		"/E/Git/cz3006/Assignment1/ass1/PFrame.java",
+		"/E/Git/cz3006/Assignment1/ass1/PFrame.class",
+		"/E/Git/cz3006/Assignment1/ass1/PEvent.class",
+		"/E/Git/cz3006/Assignment1/ass1/NetworkSender.class",
+		"/E/Git/cz3006/Assignment1/ass1/Packet.class",
+		"/E/Git/cz3006/Assignment1/ass1/NetworkReceiver.class",
+		"/E/Git/cz3006/Assignment1/ass1/NetSim.class",
+		"/E/Git/cz3006/Assignment1/ass1/FrameHandler.class",
+		"/E/Git/cz3006/Assignment1/ass1/Forwarder.class",
+		"/E/Git/cz3006/Assignment1/ass1/EventQueue.class",
+		"/E/Git/cz3006/Assignment1/ass1/VMach.class",
+		"/E/Git/cz3006/Assignment1/ass1/SWE.class",
+		"/C/Users/Clevo/Desktop/a.c",
+		"/E/Dropbox/SWP.java",
+		"/C/Users/Clevo/Desktop/ad.c",
+		"/C/Users/Clevo/AppData/Roaming/Sublime Text 3/Packages/User/CPP.sublime-build",
+		"/C/Users/Clevo/Desktop/CPP.sublime-build",
+		"/C/Users/Clevo/Desktop/ad",
+		"/C/Users/Clevo/AppData/Roaming/Sublime Text 3/Packages/User/Default (Windows).sublime-keymap"
+	],
+	"find":
+	{
+		"height": 23.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"cur_direction",
+			"cur_direction - 1",
+			"try",
+			"Boolean",
+			"direction",
+			"return 0",
+			"move_dis",
+			"check",
+			"check_front(location_x,location_y)",
+			"check_front(location_x, location_y)",
+			"check_left(location_x, location_y)"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": true,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "Packages/Java/JavaC.sublime-build",
+	"project": "SWP.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
